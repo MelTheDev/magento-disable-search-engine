@@ -1,8 +1,9 @@
 {
   "name": "melthedev/magento-disable-search-engine",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Module used to disable Elastic and OpenSearch",
   "type": "magento2-module",
+  "keywords": ["magento","search-engine", "disable-search"],
   "require": {
     "php": "^8.0|^8.1",
     "magento/framework": "103.0.*",
@@ -26,6 +27,12 @@
     ],
     "psr-4": {
       "DisableSearchEngine\\MelTheDev\\": ""
+    }
+  },
+  "repositories": {
+    "repo.magento.com": {
+      "type": "composer",
+      "url": "https://repo.magento.com/"
     }
   }
 }
