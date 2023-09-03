@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- disable plugin to use search engine for search query (afterFilter) -->
+    <type name="Magento\Catalog\Model\Layer\Search\CollectionFilter">
+        <plugin name="searchQuery" disabled="true" />
+    </type>
+
+    <!-- Force to use magento default filters instead of CatalogSearch end -->
+    <type name="Magento\Search\Model\SearchEngine\Validator">
+        <plugin name="Mel_DisableSearchEngine::AfterValidatorPlugin"
+                type="MelTheDev\DisableSearchEngine\Plugin\Search\AfterValidatorPlugin"
+                sortOrder="10"/>
+    </type>
+
+    <!-- Add dummy engine to EngineProvider -->
+    <!--<type name="Magento\CatalogSearch\Model\ResourceModel\EngineProvider">
+        <arguments>
+            <argument name="engines" xsi:type="array">
+                <item name="disabled-engine" xsi:type="string">MelTheDev\DisableSearchEngine\Model\ResourceModel\Engine</item>
+            </argument>
+        </arguments>
+    </type>-->
+
+    <!-- Add disabled-engine to config array -->
+    <type name="Magento\Search\Model\Adminhtml\System\Config\Source\Engine">
+        <arguments>
+            <argument name="engines" xsi:type="array">
+                <item name="disabled-engine" xsi:type="string">disabled-engine</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Search\Model\EngineResolver">
+        <plugin name="Mel_DisableSearchEngine::EngineResolverPlugin"
+                type="MelTheDev\DisableSearchEngine\Plugin\Search\EngineResolverPlugin"
+                sortOrder="10"/>
+    </type>
+
+    <type name="Magento\Search\Model\AdapterFactory">
+        <arguments>
+            <argument name="adapters" xsi:type="array">
+                <item name="disabled-engine" xsi:type="string">MelTheDev\DisableSearchEngine\SearchAdapter\Adapter</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\CatalogSearch\Model\Indexer\IndexerHandlerFactory">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="disabled-engine" xsi:type="string">MelTheDev\DisableSearchEngine\Model\Indexer\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\AdvancedSearch\Model\SuggestedQueries">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="disabled-engine" xsi:type="string">Magento\AdvancedSearch\Model\DataProvider\Suggestions</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Force to use magento default filters instead of CatalogSearch start -->
+    <virtualType name="categoryFilterList" type="Magento\Catalog\Model\Layer\FilterList">
+        <arguments>
+            <argument name="filters" xsi:type="array">
+                <item name="attribute" xsi:type="string">Magento\Catalog\Model\Layer\Filter\Attribute</item>
+                <item name="price" xsi:type="string">Magento\Catalog\Model\Layer\Filter\Price</item>
+                <item name="decimal" xsi:type="string">Magento\Catalog\Model\Layer\Filter\Decimal</item>
+                <item name="category" xsi:type="string">Magento\Catalog\Model\Layer\Filter\Category</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="searchFilterList" type="Magento\Catalog\Model\Layer\FilterList">
+        <arguments>
+            <argument name="filters" xsi:type="array">
+                <item name="attribute" xsi:type="string">Magento\Catalog\Model\Layer\Filter\Attribute</item>
+                <item name="price" xsi:type="string">Magento\Catalog\Model\Layer\Filter\Price</item>
+                <item name="decimal" xsi:type="string">Magento\Catalog\Model\Layer\Filter\Decimal</item>
+                <item name="category" xsi:type="string">Magento\Catalog\Model\Layer\Filter\Category</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- add fake engine "disabled-engine" for category -->
+    <virtualType name="elasticsearchLayerCategoryItemCollectionProvider" type="Magento\Elasticsearch\Model\Layer\Category\ItemCollectionProvider">
+        <arguments>
+            <argument name="factories" xsi:type="array">
+                <item name="disabled-engine" xsi:type="object">elasticsearchCategoryCollectionFactory</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- add fake engine "disabled-engine" for search -->
+    <virtualType name="elasticsearchLayerSearchItemCollectionProvider" type="Magento\Catalog\Model\Layer\Search\ItemCollectionProvider">
+        <arguments>
+            <argument name="factories" xsi:type="array">
+                <item name="disabled-engine" xsi:type="object">elasticsearchFulltextSearchCollectionFactory</item>
+            </argument>
+        </arguments>
+    </virtualType>
+</config>
